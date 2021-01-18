@@ -17,6 +17,8 @@ export const youtubeApiSearch = async (query: string) => {
   return queryResult;
 };
 
-export function youtubeScrapSearch(query:string){  
-  return ytScraper.search(query, { limit: 10, type: "video" });
+export function youtubeScrapSearch(query: string) {
+  return new Promise<Video[]>((resolve) => {
+    setTimeout(() => resolve(ytScraper.search(query, { limit: 10, type: "video" })), 150);
+  });
 }

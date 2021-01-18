@@ -1,6 +1,5 @@
 import "reflect-metadata";
-import { getModelForClass, prop } from "@typegoose/typegoose";
-import { WhatIsIt } from "@typegoose/typegoose/lib/internal/constants";
+import { getModelForClass, modelOptions, prop, Severity } from "@typegoose/typegoose";
 import { SpotifyPlaylists } from "../spotify_api";
 import { AnyParamConstructor, DocumentType } from "@typegoose/typegoose/lib/types";
 import { Model } from "mongoose";
@@ -14,11 +13,12 @@ export class PlaylistTrack {
   public url!: string;
 }
 
+@modelOptions({options:{allowMixed: Severity.ALLOW}})
 export class PlaylistSchema {
   @prop({ required: true, enum: SpotifyPlaylists })
   public name!: SpotifyPlaylists;
-  @prop({ _id: false }, WhatIsIt.ARRAY)
-  public tracks!: PlaylistTrack;
+  @prop({ _id: false })
+  public tracks!: PlaylistTrack[];
 }
 
 const Playlist: Model<DocumentType<InstanceType<AnyParamConstructor<PlaylistSchema>>>> & AnyParamConstructor<PlaylistSchema> = getModelForClass<AnyParamConstructor<PlaylistSchema>>(PlaylistSchema);
