@@ -6,7 +6,7 @@ import mongoose from "mongoose";
 import passport from "passport";
 import connectMongo from "connect-mongo";
 import session from "express-session";
-import { updateSpotifyPlaylist } from "./schedules/updateSpotifyPlaylists"
+import { updateSpotifyPlaylist } from "./schedules/updateSpotifyPlaylists";
 import { SpotifyPlaylists, SpotifyPlaylistsId } from "./initializations/spotify_api";
 
 const app = express();
@@ -43,13 +43,12 @@ app.use("/", router);
 const port = PORT ?? 4000;
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
+  // regular jobs to update the playlists
+  updateSpotifyPlaylist("0 0 1 * * *", SpotifyPlaylistsId.daily, SpotifyPlaylists.daily); //everyday 1PM
+
+  updateSpotifyPlaylist("0 2 */2 * *", SpotifyPlaylistsId.releases, SpotifyPlaylists.releases); //every two day 2PM
+
+  updateSpotifyPlaylist("0 3 * * 7", SpotifyPlaylistsId.weekly, SpotifyPlaylists.weekly); // every sunday 3PM
 });
 
 (mongoose as any).Promise = global.Promise;
-
-// regular jobs to update the playlists
-updateSpotifyPlaylist("0 0 1 * * *", SpotifyPlaylistsId.daily, SpotifyPlaylists.daily); //everyday 1PM
-
-updateSpotifyPlaylist("0 2 */2 * *", SpotifyPlaylistsId.releases, SpotifyPlaylists.releases) //every two day 2PM
-
-updateSpotifyPlaylist("0 3 * * 7", SpotifyPlaylistsId.weekly, SpotifyPlaylists.weekly) // every sunday 3PM

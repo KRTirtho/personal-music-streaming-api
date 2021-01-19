@@ -38,6 +38,7 @@
     "express-session": "^1.17.1",
     "google-auth-library": "^6.1.4",
     "googleapis": "^67.0.0",
+    "http-status-codes": "^2.1.4",
     "mongoose": "^5.11.11",
     "node-cron": "^2.0.3",
     "passport": "^0.4.1",
@@ -46,6 +47,6 @@
     "scrape-yt": "^1.4.7",
     "spotify-web-api-node": "^5.0.0",
     "string-similarity": "^4.0.4",
-    "ytdl": "^1.4.1"
+    "ytdl-core": "^4.4.3"
   }
 }
