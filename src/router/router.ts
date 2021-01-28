@@ -1,7 +1,6 @@
 import express from "express";
 import Playlist from "../initializations/mongo_models/Playlists";
 import { StatusCodes, getReasonPhrase } from "http-status-codes";
-import playTracks from "./routes/track:{id}-playTracks";
 
 export const router = express.Router();
 

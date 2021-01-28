@@ -2,9 +2,14 @@
   "name": "personal-music-streaming-api",
   "version": "1.0.0",
   "description": "A music streaming API which is intended to be used personally",
-  "main": "index.js",
+  "main": "build/index.js",
   "scripts": {
-    "start": "nodemon --watch \"src/**\" --ext \"ts,json\" --exec \"ts-node src/index.ts\""
+    "start": "node build/index.js",
+    "dev": "nodemon --watch \"src/**\" --ext \"ts,json\" --exec \"ts-node src/index.ts\"",
+    "build": "tsc"
+  },
+   "engines": {
+    "node": "14.x"
   },
   "keywords": [
     "API",
