@@ -1,6 +1,5 @@
 import express from "express";
 import Playlist from "../initializations/mongo_models/Playlists";
-import passport from "../initializations/passport/passport";
 import { StatusCodes, getReasonPhrase } from "http-status-codes";
 import playTracks from "./routes/track:{id}-playTracks";
 
@@ -25,15 +24,3 @@ router.get("/playlist/:id", async ({params: {id}}, res) => {
     res.status(StatusCodes.NOT_FOUND).json(error.message)
   }
 });
-
-router.get("/playlist/:id/track/:tid", playTracks)
-
-router.get("/auth/spotify/", passport.authenticate("spotify"));
-router.get(
-  "/auth/spotify/callback",
-  passport.authenticate("spotify", {
-    successRedirect: "/",
-    failureMessage: "Failed to authenticate with spotify. Try again",
-    failureFlash: true,
-  })
-);

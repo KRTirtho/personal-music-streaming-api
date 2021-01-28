@@ -63,10 +63,9 @@ interface SendResponseOptions {
  * @param {SendResponseOptions} { status, headers, contentReadable }
  * @return {*}  {(ReadStream | null | void)}
  */
-function sendResponse(res: Response, { status, headers, contentReadable }: SendResponseOptions): ReadStream | null | void {
+function sendResponse(res: Response, { status, headers, contentReadable }: SendResponseOptions): ReadStream | Response | null | void {
   res.writeHead(status, getReasonPhrase(status), headers);
-  if (!contentReadable) res.end();
-  // no content no response
+  if (!contentReadable) res.end(status.toString());
   else contentReadable.pipe(res);
   return null;
 }
@@ -74,6 +73,10 @@ function sendResponse(res: Response, { status, headers, contentReadable }: SendR
 export default async function playTracks(req: Request<{ id: string; tid: string }>, res: Response): Promise<null | void> {
   try {
     const url = `https://www.youtube.com/watch?v=${req.params.tid}`;
+    if (!req.params.tid) {
+      sendResponse(res, { status: StatusCodes.BAD_REQUEST });
+      return null;
+    }
     const videoInfo = await ytdl.getInfo(url);
     const mp4Audio = videoInfo.formats.find((format) => format.itag === 140);
     const mimeType = mp4Audio?.mimeType?.split(" ")[0].replace(";", "");
@@ -85,6 +88,7 @@ export default async function playTracks(req: Request<{ id: string; tid: string 
     const headers: OutgoingHttpHeaders = {};
     const musicSize = parseInt(mp4Audio?.contentLength ?? "0");
 
+    console.log("req.headers:", req.headers);
     const range = readRange(req.headers["range"], musicSize);
 
     // no range headers
@@ -93,8 +97,8 @@ export default async function playTracks(req: Request<{ id: string; tid: string 
       headers["Content-Type"] = mimeType || "audio/mp4";
       headers["Content-Length"] = musicSize;
       headers["Accept-Ranges"] = "bytes";
-
-      sendResponse(res, { status: StatusCodes.OK, headers, contentReadable: ytdl(url, { format: mp4Audio }) });
+      // sending only info about the track
+      sendResponse(res, { status: StatusCodes.OK, headers });
       return null;
     }
 
@@ -108,6 +112,8 @@ export default async function playTracks(req: Request<{ id: string; tid: string 
 
     headers["Content-Range"] = `bytes ${range.start}-${range.end}/${musicSize}`; // e.g: "bytes 1024-2047/3042"
     headers["Content-Length"] = range.start === range.end ? 0 : range.end - range.start + 1;
+    console.log('musicSize:', musicSize)
+    console.log('headers["Content-Length"]:', headers["Content-Length"])
     headers["Content-Type"] = mimeType;
     headers["Accept-Ranges"] = "bytes";
     headers["Cache-Control"] = "no-cache";

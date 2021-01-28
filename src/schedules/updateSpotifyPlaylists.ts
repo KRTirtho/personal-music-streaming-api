@@ -12,10 +12,6 @@ function includesMultiple(src: string, arr: string[], matchAll: boolean = true) 
 
 
 export function updateSpotifyPlaylist(time: string, playlistId: SpotifyPlaylistsId, playlistName: SpotifyPlaylists) {
-  // to avoid updating the three playlist at same day
-  if (new Date().getDay() === 0 && playlistId !== SpotifyPlaylistsId.weekly && playlistName !== SpotifyPlaylists.weekly) {
-    return;
-  }
   cron.schedule(time, () => spotifyCronJob(playlistId, playlistName));
 }
 
