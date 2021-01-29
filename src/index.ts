@@ -10,7 +10,7 @@ const dbConnection = mongoose.connection;
 
 mongoose.connect(MONGO_URI as string, { useNewUrlParser: true, useUnifiedTopology: true }, (err) => {
   if (err) console.log("Failed to connect:", err);
-  return console.log("Connection Established to: ", MONGO_URI);
+  return console.log("Connection Established", dbConnection.db.databaseName);
 });
 
 mongoose.set("useCreateIndex", true);
