@@ -17,6 +17,13 @@ export class PlaylistTrack {
 export class PlaylistSchema {
   @prop({ required: true, enum: SpotifyPlaylists })
   public name!: SpotifyPlaylists;
+
+  @prop({ required: true })
+  public lastUpdated!: Date;
+
+  @prop({required: true, unique: true})
+  public spotifyId!: string;
+
   @prop({ _id: false })
   public tracks!: PlaylistTrack[];
 }
